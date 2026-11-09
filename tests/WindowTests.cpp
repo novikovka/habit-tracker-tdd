@@ -150,7 +150,7 @@ private slots:
         QCOMPARE(total7->text(), QStringLiteral("5"));
         QCOMPARE(total30->text(), QStringLiteral("7"));
         capture(window, QStringLiteral("statistics"));
-        capture(*window.findChild<QScrollArea *>(QStringLiteral("statsScroll"))->widget(), QStringLiteral("statistics-content"));
+        capture(*window.findChild<QStackedWidget *>(QStringLiteral("pages"))->currentWidget(), QStringLiteral("statistics-content"));
         auto back = window.findChild<QPushButton *>(QStringLiteral("backToWeek"));
         QVERIFY(back);
         back->click();
@@ -540,6 +540,7 @@ private slots:
             auto error = dialog->findChild<QLabel *>(QStringLiteral("nameError"));
             emptyErrorHidden = error && error->text().isEmpty() && !error->isVisible()
                 && !error->sizePolicy().retainSizeWhenHidden();
+            capture(*dialog, QStringLiteral("add-normal"));
             dialog->reject();
         });
         add->click();
@@ -624,6 +625,32 @@ private slots:
         QCOMPARE(seven->width(), thirty->width());
         QVERIFY(seven->width() <= scroll->viewport()->width());
         QCOMPARE(scroll->horizontalScrollBar()->maximum(), 0);
+        capture(window, QStringLiteral("statistics-narrow"));
+    }
+    void compactStatisticsShowsAWholeChartCard()
+    {
+        HabitStore store(db);
+        QString error;
+        QVERIFY(store.initialize(error));
+        qint64 id;
+        QVERIFY(store.createHabit(QStringLiteral("Чтение"), id, error));
+        const QDate today(2026, 11, 8);
+        QVERIFY(store.setCompletion(id, today, true, today, error));
+        AppWindow window(db, [today] { return today; });
+        window.resize(800, 580);
+        window.show();
+        window.findChild<QPushButton *>(QStringLiteral("openStats"))->click();
+        QApplication::processEvents();
+        auto scroll = window.findChild<QScrollArea *>(QStringLiteral("statsScroll"));
+        QWidget *seven = nullptr;
+        for (auto widget : window.findChildren<QWidget *>())
+            if (widget->accessibleName().startsWith(QStringLiteral("Последние 7 дней"))) seven = widget;
+        QVERIFY(scroll && seven);
+        QVERIFY2(seven->height() <= scroll->viewport()->height(),
+                 "One complete chart card must fit the available viewport on a compact statistics page.");
+        capture(window, QStringLiteral("statistics-compact-top"));
+        scroll->verticalScrollBar()->setValue(scroll->verticalScrollBar()->maximum());
+        capture(window, QStringLiteral("statistics-compact-bottom"));
     }
     void cleanup()
     {
