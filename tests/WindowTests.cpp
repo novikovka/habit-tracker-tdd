@@ -545,6 +545,41 @@ private slots:
         add->click();
         QVERIFY2(emptyErrorHidden, "An empty error label must not paint a plate or reserve dialog space.");
     }
+    void completionStatesDifferInsideOneCenteredIndicator()
+    {
+        HabitStore store(db);
+        QString error;
+        QVERIFY(store.initialize(error));
+        qint64 id;
+        QVERIFY(store.createHabit(QStringLiteral("Чтение"), id, error));
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.show();
+        QApplication::processEvents();
+        auto grid = window.findChild<QTableWidget *>(QStringLiteral("weekGrid"));
+        grid->clearFocus();
+        grid->clearSelection();
+        const auto cell = grid->item(0, 4);
+        const auto rect = grid->visualItemRect(cell);
+        QVERIFY(rect.width() > 40 && rect.height() > 40);
+        const QSignalBlocker blocker(grid);
+        auto rendered = [&](Qt::CheckState state) {
+            cell->setCheckState(state);
+            return grid->viewport()->grab(rect).toImage().convertToFormat(QImage::Format_ARGB32)
+                .scaled(rect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        };
+        const auto empty = rendered(Qt::Unchecked);
+        const auto checked = rendered(Qt::Checked);
+        QRect difference;
+        for (int y = 0; y < empty.height(); ++y)
+            for (int x = 0; x < empty.width(); ++x)
+                if (empty.pixel(x, y) != checked.pixel(x, y))
+                    difference = difference.united(QRect(x, y, 1, 1));
+        QVERIFY2(!difference.isEmpty(), "Completed and empty states must be visibly different.");
+        QVERIFY2(qAbs(difference.center().x() - rect.width() / 2) <= 2,
+                 "The completion indicator must be centered horizontally, not use a system checkbox at the edge.");
+        QVERIFY(qAbs(difference.center().y() - rect.height() / 2) <= 2);
+        QVERIFY(difference.width() <= 40 && difference.height() <= 40);
+    }
     void cleanup()
     {
         QSqlQuery query(db);
