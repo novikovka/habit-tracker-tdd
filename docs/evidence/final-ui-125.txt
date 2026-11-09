@@ -22,6 +22,9 @@ PASS   : WindowTests::refreshDoesNotLeaveDuplicateVisibleRowActions()
 PASS   : WindowTests::longNameRemainsReadableThroughTooltipInNarrowWindow()
 PASS   : WindowTests::quoteIsBuiltInAndStableDuringNavigation()
 PASS   : WindowTests::ordinaryLaunchPasswordCanOpenConfiguredTestDatabase()
+PASS   : WindowTests::shortWindowKeepsWeeklyControlsInsideAvailableHeight()
+PASS   : WindowTests::configuredExecutableConnectsOnBothLaunches()
+PASS   : WindowTests::tabNavigationReachesWeeklyActions()
 PASS   : WindowTests::cleanupTestCase()
-Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 2728ms
+Totals: 21 passed, 0 failed, 0 skipped, 0 blacklisted, 3895ms
 ********* Finished testing of WindowTests *********

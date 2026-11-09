@@ -16,5 +16,5 @@ PASS   : DatabaseTests::savedAcceptanceDataProducesExpectedStatistics()
 PASS   : DatabaseTests::lostConnectionDoesNotReportSuccessfulEmptySnapshot()
 PASS   : DatabaseTests::dataSurvivesBetweenSeparateProcesses()
 PASS   : DatabaseTests::cleanupTestCase()
-Totals: 16 passed, 0 failed, 0 skipped, 0 blacklisted, 636ms
+Totals: 16 passed, 0 failed, 0 skipped, 0 blacklisted, 728ms
 ********* Finished testing of DatabaseTests *********

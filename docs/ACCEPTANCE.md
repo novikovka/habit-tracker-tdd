@@ -7,11 +7,11 @@
 | --- | --- | --- | --- |
 | Логика | 22 | Всё прошло | evidence/final-logic.txt |
 | PostgreSQL | 14 | Всё прошло | evidence/final-database.txt |
-| Qt Widgets | 16 | Всё прошло | evidence/final-ui.txt |
-| Qt Widgets 125% | те же 16 | Всё прошло | evidence/final-ui-125.txt |
-| Qt Widgets 150% | те же 16 | Всё прошло | evidence/final-ui-150.txt |
+| Qt Widgets | 19 | Всё прошло | evidence/final-ui.txt |
+| Qt Widgets 125% | те же 19 | Всё прошло | evidence/final-ui-125.txt |
+| Qt Widgets 150% | те же 19 | Всё прошло | evidence/final-ui-150.txt |
 
-Итого 52 уникальных поведенческих теста, без init/cleanup. Каждый из трёх
+Итого 55 уникальных поведенческих тестов, без init/cleanup. Каждый из трёх
 наборов CTest прошёл отдельно. Масштабные прогоны повторяют те же проверки.
 
 ## Эквиваленты сценариев приёмки SDD
@@ -26,9 +26,9 @@
 | Серии сегодня/вчера/пропуск | Проверки currentStreak и activationRefreshesLocalDayWithoutChangingSelectedWeek | Включены 45 дней, 29 февраля и переход года |
 | Чтение 3/5, Прогулка 2/2, общие 5/7 | savedAcceptanceDataProducesExpectedStatistics; statisticsShowsSavedTotalsAndReturnsToSelectedWeek | Согласованный снимок из одного SQL-запроса |
 | Отмена удаления и каскад истории | deletionDefaultsToCancelAndRequiresConfirmation; deletionRemovesHabitAndItsHistoryOnly | Вторая привычка остаётся |
-| Сохранение после закрытия | dataSurvivesBetweenSeparateProcesses; newConnectionLoadsIndependentDuplicateNamesAndHistory | Два процесса хранилища; ручной перезапуск GUI с постоянной БД ещё нужен |
+| Сохранение после закрытия | dataSurvivesBetweenSeparateProcesses; newConnectionLoadsIndependentDuplicateNamesAndHistory; configuredExecutableConnectsOnBothLaunches | Два запуска настоящего exe с временным профилем; обычное закрытие GUI с постоянной БД ещё требует ручной проверки |
 | Пустая статистика, ошибка БД, повтор | emptyStatisticsContainZeroDays; lostConnectionDoesNotReportSuccessfulEmptySnapshot; connectionFailureDisablesDataActionsAndCanBeRetried | Основной сервер не останавливался |
-| Полночь, часы назад, длинное имя, клавиатура, масштаб | midnightAndClockRollbackRecalculateStreak; activationRefreshesLocalDayWithoutChangingSelectedWeek; longNameRemainsReadableThroughTooltipInNarrowWindow; прогоны 125/150% | Qt offscreen, системные настройки не менялись |
+| Полночь, часы назад, длинное имя, клавиатура, масштаб | midnightAndClockRollbackRecalculateStreak; activationRefreshesLocalDayWithoutChangingSelectedWeek; longNameRemainsReadableThroughTooltipInNarrowWindow; shortWindowKeepsWeeklyControlsInsideAvailableHeight; tabNavigationReachesWeeklyActions; прогоны 125/150% | Qt offscreen, системные настройки не менялись |
 
 ## Визуальная проверка и оставшиеся действия
 
@@ -50,3 +50,19 @@ docs/screenshots. По снимку найдено дублирование ст
 
 Эти пункты не объявляются пройденными. Приложение и постоянное хранение
 реализованы; учётные данные основного сервера агенту недоступны.
+
+## Продолжение в Git
+
+Циклы 38 и 39 исправили ограничение высоты окна (теперь проверено 800×500)
+и недостижимость части действий через Tab. Для каждого сохранены отдельные
+RED- и GREEN-коммиты и исходные протоколы. Стрелки выбирают клетку,
+Space/Enter меняют отметку; Tab переходит между элементами управления.
+
+Новый тест настоящего exe использует временный LOCALAPPDATA и несекретный
+INI с параметрами отдельной БД. Для каждого из двух запусков подтверждено
+реальное подключение через pg_stat_activity; данные проверяются после
+повторного запуска. Данные в этом сценарии подготавливает тест через
+хранилище, а не ввод мышью в дочернем окне. Offscreen-процессы завершаются
+принудительно; ручное штатное закрытие видимого GUI этим не заменяется.
+Автоматическая Tab-проверка охватывает основные действия с одной привычкой;
+полный пользовательский осмотр клавиатурного взаимодействия остаётся полезен.
