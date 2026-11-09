@@ -4,7 +4,7 @@
 CompletionChart::CompletionChart(const QString &chartTitle, QWidget *parent)
     : QWidget(parent), title(chartTitle)
 {
-    setMinimumSize(640, 265);
+    setMinimumSize(300, 265);
     setAccessibleName(chartTitle);
 }
 

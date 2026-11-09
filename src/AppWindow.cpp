@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QStackedWidget>
 #include <QScrollArea>
+#include <QGridLayout>
 #include <QEvent>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -65,12 +66,12 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     auto layout = new QVBoxLayout(central);
     layout->setContentsMargins(28, 22, 28, 22);
     layout->setSpacing(16);
-    auto appTitle = new QLabel(QStringLiteral("Трекер привычек"), this);
+    appTitle = new QLabel(QStringLiteral("Трекер привычек"), this);
     appTitle->setObjectName(QStringLiteral("appTitle"));
-    auto subtitle = new QLabel(QStringLiteral("Маленькие шаги. Ваш собственный ритм."), this);
+    subtitle = new QLabel(QStringLiteral("Маленькие шаги. Ваш собственный ритм."), this);
     subtitle->setObjectName(QStringLiteral("subtitle"));
     const auto quotes = builtInQuotes();
-    auto quote = new QLabel(quotes[QRandomGenerator::global()->bounded(quotes.size())], this);
+    quote = new QLabel(quotes[QRandomGenerator::global()->bounded(quotes.size())], this);
     quote->setObjectName(QStringLiteral("quote"));
     quote->setWordWrap(true);
     layout->addWidget(appTitle);
@@ -182,46 +183,70 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     auto statsPage = new QWidget(this);
     auto statsLayout = new QVBoxLayout(statsPage);
     statsLayout->setContentsMargins(0, 0, 0, 0);
+    statsLayout->setSpacing(12);
+    auto heading = new QHBoxLayout;
+    auto headingText = new QVBoxLayout;
+    auto title = new QLabel(QStringLiteral("Статистика"), this);
+    title->setObjectName(QStringLiteral("statsTitle"));
+    auto description = new QLabel(QStringLiteral("Ваш ритм за последние 30 дней"), this);
+    description->setObjectName(QStringLiteral("subtitle"));
+    headingText->addWidget(title);
+    headingText->addWidget(description);
+    heading->addLayout(headingText, 1);
     auto back = new QPushButton(QStringLiteral("‹ Назад к привычкам"), this);
     back->setObjectName(QStringLiteral("backToWeek"));
-    statsLayout->addWidget(back, 0, Qt::AlignLeft);
-    auto scroll = new QScrollArea(this);
-    scroll->setObjectName(QStringLiteral("statsScroll"));
-    scroll->setWidgetResizable(true);
-    auto statsContent = new QWidget(this);
-    auto contents = new QVBoxLayout(statsContent);
-    auto title = new QLabel(QStringLiteral("Ваш прогресс"), this);
-    title->setObjectName(QStringLiteral("statsTitle"));
-    statsLayout->addWidget(title);
+    heading->addWidget(back, 0, Qt::AlignTop);
+    statsLayout->addLayout(heading);
     auto totals = new QHBoxLayout;
     total7 = new QLabel(QStringLiteral("0"), this);
     total7->setObjectName(QStringLiteral("total7"));
     total30 = new QLabel(QStringLiteral("0"), this);
     total30->setObjectName(QStringLiteral("total30"));
-    totals->addWidget(new QLabel(QStringLiteral("Выполнений за 7 дней:"), this));
+    totals->addWidget(new QLabel(QStringLiteral("Выполнений за 7 дней"), this));
     totals->addWidget(total7);
-    totals->addSpacing(24);
-    totals->addWidget(new QLabel(QStringLiteral("За 30 дней:"), this));
+    totals->addSpacing(20);
+    totals->addWidget(new QLabel(QStringLiteral("За 30 дней"), this));
     totals->addWidget(total30);
     totals->addStretch();
     statsLayout->addLayout(totals);
+    chartsScroll = new QScrollArea(this);
+    chartsScroll->setObjectName(QStringLiteral("statsScroll"));
+    chartsScroll->setWidgetResizable(true);
+    chartsScroll->setMinimumHeight(140);
+    auto statsContent = new QWidget(this);
+    chartsLayout = new QGridLayout(statsContent);
+    chartsLayout->setContentsMargins(0, 0, 0, 0);
+    chartsLayout->setSpacing(16);
     chart7 = new CompletionChart(QStringLiteral("Последние 7 дней · выполнений за день"), this);
     chart30 = new CompletionChart(QStringLiteral("Последние 30 дней · выполнений за день"), this);
-    contents->addWidget(chart7);
-    contents->addWidget(chart30);
+    chartsLayout->addWidget(chart7, 0, 0);
+    chartsLayout->addWidget(chart30, 1, 0);
+    chartsScroll->setWidget(statsContent);
+    chartsScroll->viewport()->installEventFilter(this);
+    statsLayout->addWidget(chartsScroll, 3);
+    auto summaryTitle = new QLabel(QStringLiteral("Итоги по привычкам"), this);
+    summaryTitle->setObjectName(QStringLiteral("summaryTitle"));
+    statsLayout->addWidget(summaryTitle);
     summary = new QTableWidget(this);
+    summary->setObjectName(QStringLiteral("habitSummary"));
     summary->setColumnCount(4);
     summary->setHorizontalHeaderLabels({QStringLiteral("Привычка"), QStringLiteral("Серия"), QStringLiteral("7 дней"), QStringLiteral("30 дней")});
     summary->setEditTriggers(QAbstractItemView::NoEditTriggers);
     summary->verticalHeader()->hide();
     summary->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    summary->setMinimumHeight(180);
+    summary->horizontalHeader()->setMinimumHeight(42);
+    summary->setMinimumHeight(136);
+    summary->setMaximumHeight(240);
     summary->verticalHeader()->setDefaultSectionSize(50);
-    contents->addWidget(summary);
-    scroll->setWidget(statsContent);
-    statsLayout->addWidget(scroll);
+    statsLayout->addWidget(summary, 2);
     pages->addWidget(statsPage);
     layout->addWidget(pages);
+    connect(pages, &QStackedWidget::currentChanged, this, [this](int page) {
+        appTitle->setVisible(page == 0);
+        subtitle->setVisible(page == 0);
+        quote->setVisible(page == 0);
+        if (page == 1) arrangeCharts();
+    });
     connect(openStats, &QPushButton::clicked, this, [this] { pages->setCurrentIndex(1); reload(); });
     connect(back, &QPushButton::clicked, this, [this] { pages->setCurrentIndex(0); reload(); });
     setCentralWidget(central);
@@ -266,6 +291,8 @@ bool AppWindow::event(QEvent *event)
 
 bool AppWindow::eventFilter(QObject *watched, QEvent *event)
 {
+    if (chartsScroll && watched == chartsScroll->viewport() && event->type() == QEvent::Resize)
+        arrangeCharts();
     if (watched == grid && event->type() == QEvent::KeyPress) {
         const auto key = static_cast<QKeyEvent *>(event)->key();
         auto cell = grid->currentItem();
@@ -439,4 +466,18 @@ void AppWindow::renderStatistics()
         summary->setItem(row, 2, new QTableWidgetItem(QString::number(values.last7Days)));
         summary->setItem(row, 3, new QTableWidgetItem(QString::number(values.last30Days)));
     }
+}
+
+void AppWindow::arrangeCharts()
+{
+    if (!chartsLayout || !chartsScroll) return;
+    const bool wide = chartsScroll->viewport()->width() >= 1050;
+    if (wide == chartsWide) return;
+    chartsWide = wide;
+    chartsLayout->removeWidget(chart7);
+    chartsLayout->removeWidget(chart30);
+    chartsLayout->addWidget(chart7, 0, 0);
+    chartsLayout->addWidget(chart30, wide ? 0 : 1, wide ? 1 : 0);
+    chartsLayout->setColumnStretch(0, 1);
+    chartsLayout->setColumnStretch(1, wide ? 1 : 0);
 }

@@ -13,6 +13,7 @@ QLabel#quote { background: #fffaf6; border: 1px solid #eadfe0; border-left: 3px 
 QLabel#weekRange { font-size: 17px; font-weight: 600; color: #7b5362; }
 QLabel#errorLabel, QLabel#nameError { background: #fbe5e4; color: #994e51; border-radius: 8px; padding: 10px; }
 QLabel#emptyHint { background: #fffaf5; border-radius: 12px; padding: 22px; color: #927a78; }
+QLabel#summaryTitle { font-size: 17px; font-weight: 600; color: #50434a; }
 QLabel#statsTitle { font-size: 25px; font-weight: 700; color: #754b5b; }
 QLabel#total7, QLabel#total30 { background: #fffdfb; border: 1px solid #e8ddd8; color: #914866; font-size: 24px; font-weight: 600; padding: 6px 18px; border-radius: 10px; }
 QPushButton { background: #fffdfb; border: 1px solid #e5d8dc; border-radius: 9px; padding: 10px 16px; color: #72475a; font-weight: 600; }

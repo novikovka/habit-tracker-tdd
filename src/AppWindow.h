@@ -10,6 +10,8 @@ class QTableWidget;
 class QPushButton;
 class QStackedWidget;
 class CompletionChart;
+class QScrollArea;
+class QGridLayout;
 
 class AppWindow : public QMainWindow {
 public:
@@ -21,6 +23,7 @@ private:
     void reload();
     void renderWeek();
     void renderStatistics();
+    void arrangeCharts();
     void editHabit(qint64 id = 0, const QString &initialName = {});
     void reconnect();
     void displayError(const QString &message);
@@ -30,6 +33,9 @@ private:
     WeekRange selectedWeek;
     QVector<HabitRecord> habits;
     QDate todayShown;
+    QLabel *appTitle;
+    QLabel *subtitle;
+    QLabel *quote;
     QLabel *range;
     QLabel *errorLabel;
     QLabel *emptyHint;
@@ -43,5 +49,8 @@ private:
     QTableWidget *summary;
     CompletionChart *chart7;
     CompletionChart *chart30;
+    QScrollArea *chartsScroll = nullptr;
+    QGridLayout *chartsLayout = nullptr;
+    bool chartsWide = false;
     bool uiReady = false;
 };
