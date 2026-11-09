@@ -388,6 +388,7 @@ void AppWindow::editHabit(qint64 id, const QString &initialName)
     auto error = new QLabel(&dialog);
     error->setObjectName(QStringLiteral("nameError"));
     error->setWordWrap(true);
+    error->hide();
     auto buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, &dialog);
     buttons->button(QDialogButtonBox::Save)->setText(QStringLiteral("Сохранить"));
     buttons->button(QDialogButtonBox::Save)->setObjectName(QStringLiteral("saveHabit"));
@@ -404,7 +405,10 @@ void AppWindow::editHabit(qint64 id, const QString &initialName)
         const bool saved = id ? store.renameHabit(id, input->text(), message)
                               : store.createHabit(input->text(), createdId, message);
         if (saved) dialog.accept();
-        else error->setText(message);
+        else {
+            error->setText(message);
+            error->setVisible(!message.isEmpty());
+        }
     });
     input->setFocus();
     input->selectAll();
