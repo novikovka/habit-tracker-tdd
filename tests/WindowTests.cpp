@@ -527,6 +527,24 @@ private slots:
         for (const auto &name : required)
             QVERIFY2(reached.contains(name), qPrintable(QStringLiteral("Tab did not reach %1; visited: %2").arg(name, visited.join(QStringLiteral(", ")))));
     }
+    void addDialogDoesNotShowAnEmptyErrorPlate()
+    {
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.show();
+        auto add = window.findChild<QPushButton *>(QStringLiteral("addHabit"));
+        QVERIFY(add);
+        bool emptyErrorHidden = false;
+        QTimer::singleShot(0, &window, [&] {
+            auto dialog = qobject_cast<QDialog *>(QApplication::activeModalWidget());
+            if (!dialog) return;
+            auto error = dialog->findChild<QLabel *>(QStringLiteral("nameError"));
+            emptyErrorHidden = error && error->text().isEmpty() && !error->isVisible()
+                && !error->sizePolicy().retainSizeWhenHidden();
+            dialog->reject();
+        });
+        add->click();
+        QVERIFY2(emptyErrorHidden, "An empty error label must not paint a plate or reserve dialog space.");
+    }
     void cleanup()
     {
         QSqlQuery query(db);
