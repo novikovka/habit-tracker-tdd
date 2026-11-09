@@ -498,6 +498,35 @@ private slots:
             QTRY_COMPARE_WITH_TIMEOUT(otherConnections(), 0, 5000);
         }
     }
+    void tabNavigationReachesWeeklyActions()
+    {
+        HabitStore store(db);
+        QString error;
+        QVERIFY(store.initialize(error));
+        qint64 id;
+        QVERIFY(store.createHabit(QStringLiteral("Чтение"), id, error));
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.show();
+        window.activateWindow();
+        QApplication::processEvents();
+        auto add = window.findChild<QPushButton *>(QStringLiteral("addHabit"));
+        QVERIFY(add);
+        add->setFocus();
+        QSet<QString> reached;
+        for (int step = 0; step < 60; ++step) {
+            auto focused = QApplication::focusWidget();
+            QVERIFY(focused);
+            reached.insert(focused->objectName());
+            QTest::keyClick(focused, Qt::Key_Tab);
+        }
+        const QStringList required{QStringLiteral("addHabit"), QStringLiteral("openStats"),
+            QStringLiteral("previousWeek"), QStringLiteral("nextWeek"),
+            QStringLiteral("rename-%1").arg(id), QStringLiteral("delete-%1").arg(id)};
+        auto visited = reached.values();
+        visited.sort();
+        for (const auto &name : required)
+            QVERIFY2(reached.contains(name), qPrintable(QStringLiteral("Tab did not reach %1; visited: %2").arg(name, visited.join(QStringLiteral(", ")))));
+    }
     void cleanup()
     {
         QSqlQuery query(db);

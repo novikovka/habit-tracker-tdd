@@ -326,3 +326,12 @@ habit_tracker.exe дважды. По pg_stat_activity подтверждаетс
 regression-executable-relaunch и regression-executable-relaunch-ready.
 После исправления весь набор из 18 интерфейсных тестов и CTest прошёл.
 Код приложения для этой дополнительной проверки не изменялся.
+
+### Цикл 39 — Tab-навигация
+
+Приёмочный тест tabNavigationReachesWeeklyActions обнаружил реальный дефект:
+после 60 нажатий Tab достигнуты addHabit, previousWeek, nextWeek, rename-1,
+но не openStats и delete-1. Первая проверка сохранена как acceptance-tab-navigation.
+Уточнённый RED с перечнем достигнутых элементов: cycle-39-red, код Qt Test 1;
+остальные 18 интерфейсных тестов прошли. RED-коммит содержит новый тест,
+диагностику и протоколы, код приложения в нём не изменяется.
