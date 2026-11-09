@@ -43,8 +43,8 @@ protected:
             return;
         }
         painter->save();
-        painter->fillRect(rect, QColor(QStringLiteral("#bb708c")));
-        painter->setPen(Qt::white);
+        painter->fillRect(rect, QColor(QStringLiteral("#f5e1e9")));
+        painter->setPen(QColor(QStringLiteral("#8d405f")));
         auto textFont = font();
         textFont.setBold(true);
         painter->setFont(textFont);
@@ -326,7 +326,6 @@ void AppWindow::renderWeek()
         grid->setItem(row, 0, name);
         auto streak = new QTableWidgetItem(streakText(currentStreak(habit.completedDays, today)));
         streak->setForeground(QColor(QStringLiteral("#b45b7a")));
-        streak->setBackground(QColor(QStringLiteral("#f8e5eb")));
         auto streakFont = font();
         streakFont.setBold(true);
         streak->setFont(streakFont);
@@ -372,8 +371,7 @@ void AppWindow::renderWeek()
             cell->setData(Qt::UserRole, habit.id);
             cell->setData(Qt::UserRole + 1, day);
             cell->setToolTip(day.toString(QStringLiteral("dd.MM.yyyy")));
-            if (habit.completedDays.contains(day)) cell->setBackground(QColor(QStringLiteral("#dcebd9")));
-            else if (day == today) cell->setBackground(QColor(QStringLiteral("#f6ccd9")));
+            if (day == today) cell->setBackground(QColor(QStringLiteral("#fdf5f8")));
             grid->setItem(row, i + 2, cell);
         }
     }
