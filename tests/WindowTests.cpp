@@ -13,6 +13,10 @@
 #include <QDir>
 #include <QScrollBar>
 #include <QScopeGuard>
+#include <QProcess>
+#include <QProcessEnvironment>
+#include <QTemporaryDir>
+#include <QSettings>
 #include "AppWindow.h"
 #include "HabitStore.h"
 
@@ -431,6 +435,68 @@ private slots:
             QVERIFY(window.rect().contains(button->mapTo(&window, button->rect().bottomRight())));
         }
         capture(window, QStringLiteral("short-window"));
+    }
+    void configuredExecutableConnectsOnBothLaunches()
+    {
+        QTemporaryDir profile(QCoreApplication::applicationDirPath() + QStringLiteral("/launch-XXXXXX"));
+        QVERIFY(profile.isValid());
+        QVERIFY(QDir().mkpath(profile.path() + QStringLiteral("/HabitTrackerTDD")));
+        QSettings configuration(profile.path() + QStringLiteral("/HabitTrackerTDD/connection.ini"), QSettings::IniFormat);
+        configuration.setValue(QStringLiteral("host"), db.hostName());
+        configuration.setValue(QStringLiteral("port"), db.port());
+        configuration.setValue(QStringLiteral("database"), db.databaseName());
+        configuration.setValue(QStringLiteral("user"), db.userName());
+        configuration.sync();
+        QCOMPARE(configuration.status(), QSettings::NoError);
+        auto environment = QProcessEnvironment::systemEnvironment();
+        environment.insert(QStringLiteral("LOCALAPPDATA"), profile.path());
+        environment.insert(QStringLiteral("HABIT_TRACKER_DB_PASSWORD"), qEnvironmentVariable("HABIT_TRACKER_TDD_DB_PASSWORD"));
+        environment.remove(QStringLiteral("HABIT_TRACKER_TDD_DB_PASSWORD"));
+        auto otherConnections = [this] {
+            QSqlQuery query(db);
+            if (!query.exec(QStringLiteral("SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename=current_user AND pid<>pg_backend_pid()")) || !query.next())
+                return -1;
+            return query.value(0).toInt();
+        };
+        QCOMPARE(otherConnections(), 0);
+        for (int launch = 0; launch < 2; ++launch) {
+            QProcess child;
+            child.setProcessEnvironment(environment);
+            const auto stopChild = qScopeGuard([&child] {
+                if (child.state() != QProcess::NotRunning) {
+                    child.kill();
+                    child.waitForFinished(5000);
+                }
+            });
+            child.start(QCoreApplication::applicationDirPath() + QStringLiteral("/habit_tracker.exe"), QStringList{});
+            QVERIFY(child.waitForStarted(5000));
+            QTRY_COMPARE_WITH_TIMEOUT(otherConnections(), 1, 5000);
+            auto schemaReady = [this] {
+                QSqlQuery query(db);
+                return query.exec(QStringLiteral("SELECT to_regclass('public.schema_version') IS NOT NULL AND to_regclass('public.habits') IS NOT NULL AND to_regclass('public.habit_completions') IS NOT NULL"))
+                    && query.next() && query.value(0).toBool();
+            };
+            QTRY_VERIFY_WITH_TIMEOUT(schemaReady(), 5000);
+            QCOMPARE(child.state(), QProcess::Running);
+            HabitStore store(db);
+            QString error;
+            QVERIFY(store.initialize(error));
+            if (launch == 0) {
+                qint64 id;
+                QVERIFY(store.createHabit(QStringLiteral("Повторный запуск GUI"), id, error));
+                QVERIFY(store.setCompletion(id, QDate(2026, 11, 8), true, QDate(2026, 11, 8), error));
+            } else {
+                QVector<HabitRecord> habits;
+                QVERIFY(store.loadSnapshot(habits, error));
+                QCOMPARE(habits.size(), 1);
+                QCOMPARE(habits[0].name, QStringLiteral("Повторный запуск GUI"));
+                QCOMPARE(habits[0].completedDays, QSet<QDate>{QDate(2026, 11, 8)});
+            }
+            // Offscreen has no native close button; stop only this test-owned process.
+            child.kill();
+            QVERIFY(child.waitForFinished(5000));
+            QTRY_COMPARE_WITH_TIMEOUT(otherConnections(), 0, 5000);
+        }
     }
     void cleanup()
     {
