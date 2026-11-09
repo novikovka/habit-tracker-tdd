@@ -96,6 +96,7 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     grid->setAlternatingRowColors(true);
     grid->setSelectionMode(QAbstractItemView::SingleSelection);
     grid->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    grid->setTabKeyNavigation(false);
     grid->verticalHeader()->hide();
     connect(grid, &QTableWidget::cellClicked, this, [this](int row, int column) {
         if (!grid->isEnabled() || column < 2 || column > 8 || row >= habits.size())
