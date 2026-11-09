@@ -1,0 +1,15 @@
+********* Start testing of DatabaseTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : DatabaseTests::initTestCase()
+PASS   : DatabaseTests::initializationCreatesVersionedSchema()
+PASS   : DatabaseTests::unknownSchemaVersionIsRejectedWithoutOverwrite()
+PASS   : DatabaseTests::unrelatedDatabaseIsRejectedBeforeSchemaChanges()
+PASS   : DatabaseTests::habitCreationPersistsTrimmedCyrillicName()
+PASS   : DatabaseTests::repeatedCompletionCreatesOnlyOneSavedRecord()
+FAIL!  : DatabaseTests::removingCompletionTwicePreservesOtherDates() Compared values are not the same
+   Actual   (query.value(0).toDate()): 2026/11/08
+   Expected (today.addDays(-1))      : 2026/11/07
+H:/tests/DatabaseTests.cpp(114) : failure location
+PASS   : DatabaseTests::cleanupTestCase()
+Totals: 7 passed, 1 failed, 0 skipped, 0 blacklisted, 229ms
+********* Finished testing of DatabaseTests *********

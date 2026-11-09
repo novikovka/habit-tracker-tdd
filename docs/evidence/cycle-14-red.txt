@@ -1,0 +1,9 @@
+********* Start testing of DatabaseTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : DatabaseTests::initTestCase()
+PASS   : DatabaseTests::initializationCreatesVersionedSchema()
+FAIL!  : DatabaseTests::unknownSchemaVersionIsRejectedWithoutOverwrite() '!store.initialize(error)' returned FALSE. ()
+H:/tests/DatabaseTests.cpp(42) : failure location
+PASS   : DatabaseTests::cleanupTestCase()
+Totals: 3 passed, 1 failed, 0 skipped, 0 blacklisted, 64ms
+********* Finished testing of DatabaseTests *********

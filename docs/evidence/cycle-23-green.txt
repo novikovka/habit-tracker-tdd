@@ -1,0 +1,28 @@
+********* Start testing of LogicTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : LogicTests::initTestCase()
+PASS   : LogicTests::whitespaceNameIsRejected()
+PASS   : LogicTests::nameIsTrimmed()
+PASS   : LogicTests::initialWeekContainsTodayFromMondayToSunday()
+PASS   : LogicTests::nameLongerThan100CharactersIsRejected()
+PASS   : LogicTests::multilineNameIsRejected()
+PASS   : LogicTests::exactly100CharactersAreAcceptedAfterTrimming()
+PASS   : LogicTests::weekCanCrossYearBoundary()
+PASS   : LogicTests::leapDayBelongsToCalendarWeek()
+PASS   : LogicTests::streakCountsConsecutiveDaysEndingToday()
+PASS   : LogicTests::streakUsesYesterdayWhenTodayIsNotMarked()
+PASS   : LogicTests::gapBreaksStreakAndFutureDaysDoNotCount()
+PASS   : LogicTests::streakCrossesLeapDayAndIsNotLimitedTo30Days()
+PASS   : LogicTests::futureCompletionIsForbidden()
+PASS   : LogicTests::sevenDayChartIncludesZerosAndBothBounds()
+PASS   : LogicTests::habitSummaryUsesInclusiveSevenAndThirtyDayPeriods()
+PASS   : LogicTests::weekNavigationMovesExactlySevenCalendarDays()
+PASS   : LogicTests::weekNavigationStopsAtSupportedYearBounds()
+PASS   : LogicTests::thirtyDayChartMatchesAcceptanceTotals()
+PASS   : LogicTests::emptyStatisticsContainZeroDays()
+PASS   : LogicTests::midnightAndClockRollbackRecalculateStreak()
+PASS   : LogicTests::todayAndPastAreEditableButInvalidDatesAreNot()
+PASS   : LogicTests::atLeastFiveNonemptyQuotesAreBuiltIn()
+PASS   : LogicTests::cleanupTestCase()
+Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of LogicTests *********

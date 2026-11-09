@@ -1,0 +1,12 @@
+********* Start testing of LogicTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : LogicTests::initTestCase()
+PASS   : LogicTests::whitespaceNameIsRejected()
+PASS   : LogicTests::nameIsTrimmed()
+PASS   : LogicTests::initialWeekContainsTodayFromMondayToSunday()
+PASS   : LogicTests::nameLongerThan100CharactersIsRejected()
+FAIL!  : LogicTests::multilineNameIsRejected() '!validateHabitName(QStringLiteral("Чтение\nвечером")).accepted' returned FALSE. ()
+H:/tests/LogicTests.cpp(33) : failure location
+PASS   : LogicTests::cleanupTestCase()
+Totals: 6 passed, 1 failed, 0 skipped, 0 blacklisted, 2ms
+********* Finished testing of LogicTests *********

@@ -1,0 +1,28 @@
+********* Start testing of WindowTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : WindowTests::initTestCase()
+PASS   : WindowTests::startupOpensWeekContainingLocalToday()
+PASS   : WindowTests::savedCompletionsAppearOnTheirCalendarDates()
+PASS   : WindowTests::spaceTogglesCompletionAndPersistsIt()
+PASS   : WindowTests::nextWeekNavigationKeepsMarksOnTheirDates()
+PASS   : WindowTests::statisticsShowsSavedTotalsAndReturnsToSelectedWeek()
+PASS   : WindowTests::activationRefreshesLocalDayWithoutChangingSelectedWeek()
+QWARN  : WindowTests::addDialogKeepsInvalidInputAndSavesValidName() This plugin does not support propagateSizeHints()
+QWARN  : WindowTests::addDialogKeepsInvalidInputAndSavesValidName() This plugin does not support propagateSizeHints()
+PASS   : WindowTests::addDialogKeepsInvalidInputAndSavesValidName()
+QWARN  : WindowTests::renameDialogSavesOnEnterAndCancelsOnEscape() This plugin does not support propagateSizeHints()
+QWARN  : WindowTests::renameDialogSavesOnEnterAndCancelsOnEscape() This plugin does not support propagateSizeHints()
+PASS   : WindowTests::renameDialogSavesOnEnterAndCancelsOnEscape()
+QWARN  : WindowTests::deletionDefaultsToCancelAndRequiresConfirmation() This plugin does not support propagateSizeHints()
+QWARN  : WindowTests::deletionDefaultsToCancelAndRequiresConfirmation() This plugin does not support propagateSizeHints()
+PASS   : WindowTests::deletionDefaultsToCancelAndRequiresConfirmation()
+PASS   : WindowTests::connectionFailureDisablesDataActionsAndCanBeRetried()
+PASS   : WindowTests::clickingCellCenterTogglesSavedCompletion()
+PASS   : WindowTests::enterTogglesFocusedCompletionCell()
+PASS   : WindowTests::refreshDoesNotLeaveDuplicateVisibleRowActions()
+PASS   : WindowTests::longNameRemainsReadableThroughTooltipInNarrowWindow()
+PASS   : WindowTests::quoteIsBuiltInAndStableDuringNavigation()
+PASS   : WindowTests::ordinaryLaunchPasswordCanOpenConfiguredTestDatabase()
+PASS   : WindowTests::cleanupTestCase()
+Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 3086ms
+********* Finished testing of WindowTests *********

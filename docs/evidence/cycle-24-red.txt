@@ -1,0 +1,8 @@
+********* Start testing of WindowTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : WindowTests::initTestCase()
+FAIL!  : WindowTests::startupOpensWeekContainingLocalToday() 'range' returned FALSE. ()
+H:/tests/WindowTests.cpp(24) : failure location
+PASS   : WindowTests::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 38ms
+********* Finished testing of WindowTests *********

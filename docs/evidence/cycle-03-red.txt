@@ -1,0 +1,12 @@
+********* Start testing of LogicTests *********
+Config: Using QtTest library 6.9.1, Qt 6.9.1 (x86_64-little_endian-llp64 shared (dynamic) release build; by GCC 13.1.0), windows 10
+PASS   : LogicTests::initTestCase()
+PASS   : LogicTests::whitespaceNameIsRejected()
+PASS   : LogicTests::nameIsTrimmed()
+FAIL!  : LogicTests::initialWeekContainsTodayFromMondayToSunday() Compared values are not the same
+   Actual   (week.monday)       : 2026/11/08
+   Expected (QDate(2026, 11, 2)): 2026/11/02
+H:/tests/LogicTests.cpp(22) : failure location
+PASS   : LogicTests::cleanupTestCase()
+Totals: 4 passed, 1 failed, 0 skipped, 0 blacklisted, 3ms
+********* Finished testing of LogicTests *********
