@@ -408,6 +408,30 @@ private slots:
         QSqlDatabase::removeDatabase(QStringLiteral("configured"));
         QVERIFY(opened);
     }
+    void shortWindowKeepsWeeklyControlsInsideAvailableHeight()
+    {
+        HabitStore store(db);
+        QString error;
+        QVERIFY(store.initialize(error));
+        qint64 id;
+        QVERIFY(store.createHabit(QStringLiteral("??????"), id, error));
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.resize(800, 500);
+        window.show();
+        QApplication::processEvents();
+        QVERIFY2(window.height() <= 500, "Window must fit a short logical desktop at higher display scaling.");
+        auto grid = window.findChild<QTableWidget *>(QStringLiteral("weekGrid"));
+        QVERIFY(grid->viewport()->height() > 0);
+        const auto bottom = grid->mapTo(&window, QPoint(0, grid->height() - 1));
+        QVERIFY(window.rect().contains(bottom));
+        for (const auto &name : {QStringLiteral("addHabit"), QStringLiteral("previousWeek"), QStringLiteral("nextWeek")}) {
+            auto button = window.findChild<QPushButton *>(name);
+            QVERIFY(button);
+            QVERIFY(button->isEnabled());
+            QVERIFY(window.rect().contains(button->mapTo(&window, button->rect().bottomRight())));
+        }
+        capture(window, QStringLiteral("short-window"));
+    }
     void cleanup()
     {
         QSqlQuery query(db);
