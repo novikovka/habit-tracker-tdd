@@ -24,5 +24,5 @@ PASS   : LogicTests::midnightAndClockRollbackRecalculateStreak()
 PASS   : LogicTests::todayAndPastAreEditableButInvalidDatesAreNot()
 PASS   : LogicTests::atLeastFiveNonemptyQuotesAreBuiltIn()
 PASS   : LogicTests::cleanupTestCase()
-Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 2ms
+Totals: 24 passed, 0 failed, 0 skipped, 0 blacklisted, 3ms
 ********* Finished testing of LogicTests *********

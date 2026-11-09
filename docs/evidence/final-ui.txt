@@ -23,5 +23,5 @@ PASS   : WindowTests::longNameRemainsReadableThroughTooltipInNarrowWindow()
 PASS   : WindowTests::quoteIsBuiltInAndStableDuringNavigation()
 PASS   : WindowTests::ordinaryLaunchPasswordCanOpenConfiguredTestDatabase()
 PASS   : WindowTests::cleanupTestCase()
-Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 2737ms
+Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 3213ms
 ********* Finished testing of WindowTests *********
