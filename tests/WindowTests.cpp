@@ -602,6 +602,29 @@ private slots:
         QVERIFY(window.rect().contains(titlePosition));
         QVERIFY(window.rect().contains(totalPosition));
     }
+    void chartsAdaptToWideAndNarrowStatisticsWithoutHorizontalClipping()
+    {
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.show();
+        window.findChild<QPushButton *>(QStringLiteral("openStats"))->click();
+        QApplication::processEvents();
+        QWidget *seven = nullptr, *thirty = nullptr;
+        for (auto widget : window.findChildren<QWidget *>()) {
+            if (widget->accessibleName().startsWith(QStringLiteral("Последние 7 дней"))) seven = widget;
+            if (widget->accessibleName().startsWith(QStringLiteral("Последние 30 дней"))) thirty = widget;
+        }
+        QVERIFY(seven && thirty);
+        auto scroll = window.findChild<QScrollArea *>(QStringLiteral("statsScroll"));
+        QVERIFY(scroll);
+        QCOMPARE(seven->mapTo(scroll->widget(), QPoint(0, 0)).y(), thirty->mapTo(scroll->widget(), QPoint(0, 0)).y());
+        QCOMPARE(scroll->horizontalScrollBar()->maximum(), 0);
+        window.resize(800, 580);
+        QApplication::processEvents();
+        QTRY_VERIFY(thirty->mapTo(scroll->widget(), QPoint(0, 0)).y() > seven->mapTo(scroll->widget(), QPoint(0, 0)).y());
+        QCOMPARE(seven->width(), thirty->width());
+        QVERIFY(seven->width() <= scroll->viewport()->width());
+        QCOMPARE(scroll->horizontalScrollBar()->maximum(), 0);
+    }
     void cleanup()
     {
         QSqlQuery query(db);
