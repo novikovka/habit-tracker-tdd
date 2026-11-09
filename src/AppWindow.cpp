@@ -471,6 +471,9 @@ void AppWindow::renderStatistics()
 void AppWindow::arrangeCharts()
 {
     if (!chartsLayout || !chartsScroll) return;
+    const int cardHeight = qMax(140, chartsScroll->viewport()->height());
+    chart7->setFixedHeight(cardHeight);
+    chart30->setFixedHeight(cardHeight);
     const bool wide = chartsScroll->viewport()->width() >= 1050;
     if (wide == chartsWide) return;
     chartsWide = wide;
