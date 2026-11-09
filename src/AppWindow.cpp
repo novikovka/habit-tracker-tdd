@@ -233,7 +233,9 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     summary->setHorizontalHeaderLabels({QStringLiteral("Привычка"), QStringLiteral("Серия"), QStringLiteral("7 дней"), QStringLiteral("30 дней")});
     summary->setEditTriggers(QAbstractItemView::NoEditTriggers);
     summary->verticalHeader()->hide();
-    summary->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    summary->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    summary->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    for (int column = 1; column < 4; ++column) summary->setColumnWidth(column, 140);
     summary->horizontalHeader()->setMinimumHeight(42);
     summary->setMinimumHeight(136);
     summary->setMaximumHeight(240);
@@ -465,6 +467,8 @@ void AppWindow::renderStatistics()
         summary->setItem(row, 1, new QTableWidgetItem(QString::number(values.streak)));
         summary->setItem(row, 2, new QTableWidgetItem(QString::number(values.last7Days)));
         summary->setItem(row, 3, new QTableWidgetItem(QString::number(values.last30Days)));
+        for (int column = 1; column < 4; ++column)
+            summary->item(row, column)->setTextAlignment(Qt::AlignCenter);
     }
 }
 

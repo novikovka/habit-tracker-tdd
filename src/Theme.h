@@ -21,9 +21,9 @@ QPushButton:hover { background: #faedf2; border-color: #c994aa; }
 QPushButton:pressed { background: #f0d7e2; }
 QPushButton:focus { border: 2px solid #b86687; }
 QPushButton:disabled { color: #b2a39f; background: #eee8e2; border-color: #e4dcd5; }
-QPushButton#addHabit { background: #b65e7c; color: #ffffff; border-color: #b65e7c; }
-QPushButton#addHabit:hover { background: #a64d6c; }
-QPushButton#addHabit:disabled { background: #eee8e2; color: #b2a39f; border-color: #e4dcd5; }
+QPushButton#addHabit, QPushButton#saveHabit { background: #b65e7c; color: #ffffff; border-color: #b65e7c; }
+QPushButton#addHabit:hover, QPushButton#saveHabit:hover { background: #a64d6c; }
+QPushButton#addHabit:disabled, QPushButton#saveHabit:disabled { background: #eee8e2; color: #b2a39f; border-color: #e4dcd5; }
 QPushButton[compact="true"] { font-size: 12px; padding: 7px 9px; }
 QPushButton[danger="true"] { background: #fff8f5; color: #a45e6d; border-color: #e8cbd0; }
 QLineEdit { background: #fffdfb; border: 1px solid #dbb9c6; border-radius: 9px; padding: 10px; selection-background-color: #d897af; }
