@@ -580,6 +580,28 @@ private slots:
         QVERIFY(qAbs(difference.center().y() - rect.height() / 2) <= 2);
         QVERIFY(difference.width() <= 40 && difference.height() <= 40);
     }
+    void statisticsKeepsHeadingAndTotalsVisibleWhileChartsScroll()
+    {
+        AppWindow window(db, [] { return QDate(2026, 11, 8); });
+        window.resize(800, 580);
+        window.show();
+        window.findChild<QPushButton *>(QStringLiteral("openStats"))->click();
+        QApplication::processEvents();
+        auto title = window.findChild<QLabel *>(QStringLiteral("statsTitle"));
+        auto total = window.findChild<QLabel *>(QStringLiteral("total7"));
+        auto scroll = window.findChild<QScrollArea *>(QStringLiteral("statsScroll"));
+        QVERIFY(title && total && scroll);
+        const auto titlePosition = title->mapTo(&window, QPoint(0, 0));
+        const auto totalPosition = total->mapTo(&window, QPoint(0, 0));
+        QVERIFY(scroll->verticalScrollBar()->maximum() > 0);
+        scroll->verticalScrollBar()->setValue(scroll->verticalScrollBar()->maximum());
+        QApplication::processEvents();
+        QCOMPARE(title->mapTo(&window, QPoint(0, 0)), titlePosition);
+        QCOMPARE(total->mapTo(&window, QPoint(0, 0)), totalPosition);
+        QVERIFY(title->isVisible() && total->isVisible());
+        QVERIFY(window.rect().contains(titlePosition));
+        QVERIFY(window.rect().contains(totalPosition));
+    }
     void cleanup()
     {
         QSqlQuery query(db);
