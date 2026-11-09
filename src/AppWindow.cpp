@@ -192,7 +192,7 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     auto contents = new QVBoxLayout(statsContent);
     auto title = new QLabel(QStringLiteral("Ваш прогресс"), this);
     title->setObjectName(QStringLiteral("statsTitle"));
-    contents->addWidget(title);
+    statsLayout->addWidget(title);
     auto totals = new QHBoxLayout;
     total7 = new QLabel(QStringLiteral("0"), this);
     total7->setObjectName(QStringLiteral("total7"));
@@ -204,7 +204,7 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     totals->addWidget(new QLabel(QStringLiteral("За 30 дней:"), this));
     totals->addWidget(total30);
     totals->addStretch();
-    contents->addLayout(totals);
+    statsLayout->addLayout(totals);
     chart7 = new CompletionChart(QStringLiteral("Последние 7 дней · выполнений за день"), this);
     chart30 = new CompletionChart(QStringLiteral("Последние 30 дней · выполнений за день"), this);
     contents->addWidget(chart7);
