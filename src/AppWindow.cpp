@@ -57,7 +57,7 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
 {
     setWindowTitle(QStringLiteral("Трекер привычек"));
     resize(1360, 820);
-    setMinimumSize(800, 580);
+    setMinimumSize(800, 480);
     setFont(QFont(QStringLiteral("Segoe UI"), 10));
     setStyleSheet(applicationStyle());
     auto central = new QWidget(this);

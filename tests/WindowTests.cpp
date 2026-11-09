@@ -414,7 +414,7 @@ private slots:
         QString error;
         QVERIFY(store.initialize(error));
         qint64 id;
-        QVERIFY(store.createHabit(QStringLiteral("??????"), id, error));
+        QVERIFY(store.createHabit(QStringLiteral("Чтение"), id, error));
         AppWindow window(db, [] { return QDate(2026, 11, 8); });
         window.resize(800, 500);
         window.show();
