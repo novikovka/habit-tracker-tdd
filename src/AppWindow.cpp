@@ -20,6 +20,7 @@
 #include <QRandomGenerator>
 #include "Theme.h"
 #include "CompletionChart.h"
+#include "CompletionDelegate.h"
 
 static QString streakText(int count)
 {
@@ -84,6 +85,9 @@ AppWindow::AppWindow(QSqlDatabase database, std::function<QDate()> dateClock)
     grid->setObjectName(QStringLiteral("weekGrid"));
     grid->installEventFilter(this);
     grid->setColumnCount(10);
+    auto completionDelegate = new CompletionDelegate(grid);
+    for (int column = 2; column <= 8; ++column)
+        grid->setItemDelegateForColumn(column, completionDelegate);
     grid->setHorizontalHeader(new WeekHeader(grid));
     grid->horizontalHeader()->setMinimumHeight(66);
     grid->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
